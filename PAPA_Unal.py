@@ -16,6 +16,10 @@ TIPOS_ASIGNATURAS = [
 
 # Configurar la interfaz de usuario con Streamlit
 st.title("Calculadora de Promedio Aritmético Ponderado Acumulado (PAPA)")
+
+# Autor de la app
+st.write("Esta app fue elaborada por Hassel Florez.") 
+
 st.write(
     "Calcula el Promedio Aritmético Ponderado Acumulado (PAPA) de tus materias "
     "considerando las calificaciones, los créditos y la tipología de asignatura."
