@@ -24,6 +24,11 @@ def area_trapecio(base_mayor, base_menor, altura):
     return ((base_mayor + base_menor) * altura) / 2
 
 
+def area_rombo(diagonal_mayor, diagonal_menor):
+    """Calcula el área de un rombo."""
+    return (diagonal_mayor * diagonal_menor) / 2
+
+
 def volumen_cubo(lado):
     """Calcula el volumen de un cubo."""
     return lado ** 3
@@ -44,8 +49,14 @@ def volumen_cono(radio, altura):
     return (1 / 3) * math.pi * radio ** 2 * altura
 
 
-# Título de la aplicación
+def volumen_piramide(base, altura):
+    """Calcula el volumen de una pirámide."""
+    return (1 / 3) * base * altura
+
+
+# Título de la aplicación y autor
 st.title("Calculadora de Áreas y Volúmenes de Figuras Comunes")
+st.markdown("**Autor:** Hassel Florez")
 
 # Menú para seleccionar entre áreas o volúmenes
 categoria = st.radio(
@@ -57,7 +68,8 @@ categoria = st.radio(
 if categoria == "Áreas":
     opcion_area = st.selectbox(
         'Selecciona la figura para calcular el área',
-        ('Área de un Círculo', 'Área de un Triángulo', 'Área de un Rectángulo', 'Área de un Trapecio')
+        ('Área de un Círculo', 'Área de un Triángulo', 'Área de un Rectángulo', 
+         'Área de un Trapecio', 'Área de un Rombo')
     )
 
     if opcion_area == 'Área de un Círculo':
@@ -88,11 +100,19 @@ if categoria == "Áreas":
             resultado = area_trapecio(base_mayor, base_menor, altura)
             st.write(f'El área del trapecio es: {resultado:.2f} unidades cuadradas')
 
+    elif opcion_area == 'Área de un Rombo':
+        diagonal_mayor = st.number_input('Introduce la diagonal mayor del rombo', min_value=0.0)
+        diagonal_menor = st.number_input('Introduce la diagonal menor del rombo', min_value=0.0)
+        if diagonal_mayor > 0 and diagonal_menor > 0:
+            resultado = area_rombo(diagonal_mayor, diagonal_menor)
+            st.write(f'El área del rombo es: {resultado:.2f} unidades cuadradas')
+
 # Sección de volúmenes
 elif categoria == "Volúmenes":
     opcion_volumen = st.selectbox(
         'Selecciona la figura para calcular el volumen',
-        ('Volumen de un Cubo', 'Volumen de una Esfera', 'Volumen de un Cilindro', 'Volumen de un Cono')
+        ('Volumen de un Cubo', 'Volumen de una Esfera', 'Volumen de un Cilindro', 
+         'Volumen de un Cono', 'Volumen de una Pirámide')
     )
 
     if opcion_volumen == 'Volumen de un Cubo':
@@ -120,3 +140,10 @@ elif categoria == "Volúmenes":
         if radio > 0 and altura > 0:
             resultado = volumen_cono(radio, altura)
             st.write(f'El volumen del cono es: {resultado:.2f} unidades cúbicas')
+
+    elif opcion_volumen == 'Volumen de una Pirámide':
+        base = st.number_input('Introduce el área de la base de la pirámide', min_value=0.0)
+        altura = st.number_input('Introduce la altura de la pirámide', min_value=0.0)
+        if base > 0 and altura > 0:
+            resultado = volumen_piramide(base, altura)
+            st.write(f'El volumen de la pirámide es: {resultado:.2f} unidades cúbicas')
