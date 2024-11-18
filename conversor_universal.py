@@ -21,196 +21,256 @@ tipo_conversion = st.selectbox(
     ],
 )
 
-# Funciones para cada conversión
-# === Conversión de Temperatura ===
-def celsius_a_fahrenheit(c):
-    return c * 9 / 5 + 32
-
-
-def fahrenheit_a_celsius(f):
-    return (f - 32) * 5 / 9
-
-
-def celsius_a_kelvin(c):
-    return c + 273.15
-
-
-def kelvin_a_celsius(k):
-    return k - 273.15
-
-
-# === Conversión de Longitud ===
-def pies_a_metros(p):
-    return p * 0.3048
-
-
-def metros_a_pies(m):
-    return m / 0.3048
-
-
-def pulgadas_a_centimetros(p):
-    return p * 2.54
-
-
-def centimetros_a_pulgadas(c):
-    return c / 2.54
-
-
-# === Conversión de Peso/Masa ===
-def libras_a_kilogramos(l):
-    return l * 0.453592
-
-
-def kilogramos_a_libras(k):
-    return k / 0.453592
-
-
-def onzas_a_gramos(o):
-    return o * 28.3495
-
-
-def gramos_a_onzas(g):
-    return g / 28.3495
-
-
-# === Conversión de Volumen ===
-def galones_a_litros(g):
-    return g * 3.78541
-
-
-def litros_a_galones(l):
-    return l / 3.78541
-
-
-def pulgadas_cubicas_a_cm_cubicos(p):
-    return p * 16.3871
-
-
-def cm_cubicos_a_pulgadas_cubicas(c):
-    return c / 16.3871
-
-
-# === Conversión de Tiempo ===
-def horas_a_minutos(h):
-    return h * 60
-
-
-def minutos_a_segundos(m):
-    return m * 60
-
-
-def dias_a_horas(d):
-    return d * 24
-
-
-def semanas_a_dias(s):
-    return s * 7
-
-
-# === Conversión de Velocidad ===
-def mph_a_kph(mph):
-    return mph * 1.60934
-
-
-def kph_a_mps(kph):
-    return kph / 3.6
-
-
-def nudos_a_mph(n):
-    return n * 1.15078
-
-
-def mps_a_fps(mps):
-    return mps * 3.28084
-
-
-# === Conversión de Área ===
-def metros_cuadrados_a_pies_cuadrados(m2):
-    return m2 * 10.7639
-
-
-def pies_cuadrados_a_metros_cuadrados(p2):
-    return p2 / 10.7639
-
-
-def km_cuadrados_a_millas_cuadradas(km2):
-    return km2 * 0.386102
-
-
-def millas_cuadradas_a_km_cuadrados(mi2):
-    return mi2 / 0.386102
-
-
-# === Conversión de Energía ===
-def julios_a_calorias(j):
-    return j / 4.184
-
-
-def calorias_a_kilojulios(c):
-    return c * 0.004184
-
-
-def kwh_a_mj(kwh):
-    return kwh * 3.6
-
-
-def mj_a_kwh(mj):
-    return mj / 3.6
-
-
-# === Conversión de Presión ===
-def pascales_a_atmosferas(p):
-    return p / 101325
-
-
-def atmosferas_a_pascales(a):
-    return a * 101325
-
-
-def barras_a_psi(b):
-    return b * 14.5038
-
-
-def psi_a_bares(psi):
-    return psi / 14.5038
-
-
-# === Conversión de Tamaño de Datos ===
-def megabytes_a_gigabytes(mb):
-    return mb / 1024
-
-
-def gigabytes_a_terabytes(gb):
-    return gb / 1024
-
-
-def kilobytes_a_megabytes(kb):
-    return kb / 1024
-
-
-def terabytes_a_petabytes(tb):
-    return tb / 1024
-
-
-# Submenú y lógica según el tipo de conversión seleccionado
-conversion = ""
-valor = 0
-
+# === Conversiones de Temperatura ===
 if tipo_conversion == "Temperatura":
     conversion = st.selectbox(
         "Selecciona la conversión:",
-        ["Celsius a Fahrenheit", "Fahrenheit a Celsius", "Celsius a Kelvin", "Kelvin a Celsius"],
+        [
+            "Celsius a Fahrenheit",
+            "Fahrenheit a Celsius",
+            "Celsius a Kelvin",
+            "Kelvin a Celsius",
+        ],
     )
     valor = st.number_input("Ingresa el valor a convertir:")
     if conversion == "Celsius a Fahrenheit":
-        st.write(f"{valor}°C son {celsius_a_fahrenheit(valor):.2f}°F")
+        resultado = valor * 9 / 5 + 32
+        st.write(f"{valor}°C son {resultado:.2f}°F")
     elif conversion == "Fahrenheit a Celsius":
-        st.write(f"{valor}°F son {fahrenheit_a_celsius(valor):.2f}°C")
+        resultado = (valor - 32) * 5 / 9
+        st.write(f"{valor}°F son {resultado:.2f}°C")
     elif conversion == "Celsius a Kelvin":
-        st.write(f"{valor}°C son {celsius_a_kelvin(valor):.2f}K")
+        resultado = valor + 273.15
+        st.write(f"{valor}°C son {resultado:.2f}K")
     elif conversion == "Kelvin a Celsius":
-        st.write(f"{valor}K son {kelvin_a_celsius(valor):.2f}°C")
+        resultado = valor - 273.15
+        st.write(f"{valor}K son {resultado:.2f}°C")
 
-# Repetir estructura similar para Longitud, Peso/Masa, Volumen, etc.
-# ...
+# === Conversiones de Longitud ===
+elif tipo_conversion == "Longitud":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Pies a metros",
+            "Metros a pies",
+            "Pulgadas a centímetros",
+            "Centímetros a pulgadas",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Pies a metros":
+        resultado = valor * 0.3048
+        st.write(f"{valor} pies son {resultado:.2f} metros")
+    elif conversion == "Metros a pies":
+        resultado = valor / 0.3048
+        st.write(f"{valor} metros son {resultado:.2f} pies")
+    elif conversion == "Pulgadas a centímetros":
+        resultado = valor * 2.54
+        st.write(f"{valor} pulgadas son {resultado:.2f} cm")
+    elif conversion == "Centímetros a pulgadas":
+        resultado = valor / 2.54
+        st.write(f"{valor} cm son {resultado:.2f} pulgadas")
 
+# === Conversiones de Peso/Masa ===
+elif tipo_conversion == "Peso/Masa":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Libras a kilogramos",
+            "Kilogramos a libras",
+            "Onzas a gramos",
+            "Gramos a onzas",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Libras a kilogramos":
+        resultado = valor * 0.453592
+        st.write(f"{valor} libras son {resultado:.2f} kg")
+    elif conversion == "Kilogramos a libras":
+        resultado = valor / 0.453592
+        st.write(f"{valor} kg son {resultado:.2f} libras")
+    elif conversion == "Onzas a gramos":
+        resultado = valor * 28.3495
+        st.write(f"{valor} onzas son {resultado:.2f} gramos")
+    elif conversion == "Gramos a onzas":
+        resultado = valor / 28.3495
+        st.write(f"{valor} gramos son {resultado:.2f} onzas")
+
+# === Conversiones de Volumen ===
+elif tipo_conversion == "Volumen":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Galones a litros",
+            "Litros a galones",
+            "Pulgadas cúbicas a cm³",
+            "Cm³ a pulgadas cúbicas",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Galones a litros":
+        resultado = valor * 3.78541
+        st.write(f"{valor} galones son {resultado:.2f} litros")
+    elif conversion == "Litros a galones":
+        resultado = valor / 3.78541
+        st.write(f"{valor} litros son {resultado:.2f} galones")
+    elif conversion == "Pulgadas cúbicas a cm³":
+        resultado = valor * 16.3871
+        st.write(f"{valor} pulgadas cúbicas son {resultado:.2f} cm³")
+    elif conversion == "Cm³ a pulgadas cúbicas":
+        resultado = valor / 16.3871
+        st.write(f"{valor} cm³ son {resultado:.2f} pulgadas cúbicas")
+
+# === Conversiones de Tiempo ===
+elif tipo_conversion == "Tiempo":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Horas a minutos",
+            "Minutos a segundos",
+            "Días a horas",
+            "Semanas a días",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Horas a minutos":
+        resultado = valor * 60
+        st.write(f"{valor} horas son {resultado:.2f} minutos")
+    elif conversion == "Minutos a segundos":
+        resultado = valor * 60
+        st.write(f"{valor} minutos son {resultado:.2f} segundos")
+    elif conversion == "Días a horas":
+        resultado = valor * 24
+        st.write(f"{valor} días son {resultado:.2f} horas")
+    elif conversion == "Semanas a días":
+        resultado = valor * 7
+        st.write(f"{valor} semanas son {resultado:.2f} días")
+
+# === Conversiones de Velocidad ===
+elif tipo_conversion == "Velocidad":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Millas/h a km/h",
+            "Km/h a m/s",
+            "Nudos a mph",
+            "m/s a fps",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Millas/h a km/h":
+        resultado = valor * 1.60934
+        st.write(f"{valor} mph son {resultado:.2f} km/h")
+    elif conversion == "Km/h a m/s":
+        resultado = valor / 3.6
+        st.write(f"{valor} km/h son {resultado:.2f} m/s")
+    elif conversion == "Nudos a mph":
+        resultado = valor * 1.15078
+        st.write(f"{valor} nudos son {resultado:.2f} mph")
+    elif conversion == "m/s a fps":
+        resultado = valor * 3.28084
+        st.write(f"{valor} m/s son {resultado:.2f} fps")
+
+# === Conversiones de Área ===
+elif tipo_conversion == "Área":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Metros cuadrados a pies cuadrados",
+            "Pies cuadrados a metros cuadrados",
+            "Kilómetros cuadrados a millas cuadradas",
+            "Millas cuadradas a kilómetros cuadrados",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Metros cuadrados a pies cuadrados":
+        resultado = valor * 10.7639
+        st.write(f"{valor} m² son {resultado:.2f} ft²")
+    elif conversion == "Pies cuadrados a metros cuadrados":
+        resultado = valor / 10.7639
+        st.write(f"{valor} ft² son {resultado:.2f} m²")
+    elif conversion == "Kilómetros cuadrados a millas cuadradas":
+        resultado = valor * 0.386102
+        st.write(f"{valor} km² son {resultado:.2f} mi²")
+    elif conversion == "Millas cuadradas a kilómetros cuadrados":
+        resultado = valor / 0.386102
+        st.write(f"{valor} mi² son {resultado:.2f} km²")
+
+# === Conversiones de Energía ===
+elif tipo_conversion == "Energía":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Julios a calorías",
+            "Calorías a kilojulios",
+            "Kilovatios-hora a megajulios",
+            "Megajulios a kilovatios-hora",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Julios a calorías":
+        resultado = valor / 4.184
+        st.write(f"{valor} J son {resultado:.2f} cal")
+    elif conversion == "Calorías a kilojulios":
+        resultado = valor * 4.184 / 1000
+        st.write(f"{valor} cal son {resultado:.2f} kJ")
+    elif conversion == "Kilovatios-hora a megajulios":
+        resultado = valor * 3.6
+        st.write(f"{valor} kWh son {resultado:.2f} MJ")
+    elif conversion == "Megajulios a kilovatios-hora":
+        resultado = valor / 3.6
+        st.write(f"{valor} MJ son {resultado:.2f} kWh")
+
+# === Conversiones de Presión ===
+elif tipo_conversion == "Presión":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Pascales a atmósferas",
+            "Atmósferas a pascales",
+            "Barras a libras por pulgada cuadrada",
+            "Libras por pulgada cuadrada a bares",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Pascales a atmósferas":
+        resultado = valor / 101325
+        st.write(f"{valor} Pa son {resultado:.6f} atm")
+    elif conversion == "Atmósferas a pascales":
+        resultado = valor * 101325
+        st.write(f"{valor} atm son {resultado:.2f} Pa")
+    elif conversion == "Barras a libras por pulgada cuadrada":
+        resultado = valor * 14.5038
+        st.write(f"{valor} bar son {resultado:.2f} psi")
+    elif conversion == "Libras por pulgada cuadrada a bares":
+        resultado = valor / 14.5038
+        st.write(f"{valor} psi son {resultado:.6f} bar")
+
+# === Conversiones de Tamaño de Datos ===
+elif tipo_conversion == "Tamaño de Datos":
+    conversion = st.selectbox(
+        "Selecciona la conversión:",
+        [
+            "Megabytes a gigabytes",
+            "Gigabytes a terabytes",
+            "Kilobytes a megabytes",
+            "Terabytes a petabytes",
+        ],
+    )
+    valor = st.number_input("Ingresa el valor a convertir:")
+    if conversion == "Megabytes a gigabytes":
+        resultado = valor / 1024
+        st.write(f"{valor} MB son {resultado:.6f} GB")
+    elif conversion == "Gigabytes a terabytes":
+        resultado = valor / 1024
+        st.write(f"{valor} GB son {resultado:.6f} TB")
+    elif conversion == "Kilobytes a megabytes":
+        resultado = valor / 1024
+        st.write(f"{valor} KB son {resultado:.6f} MB")
+    elif conversion == "Terabytes a petabytes":
+        resultado = valor / 1024
+        st.write(f"{valor} TB son {resultado:.6f} PB")
+
+# === Advertencia si no se selecciona categoría válida ===
+else:
+    st.warning("Selecciona una categoría válida para realizar conversiones.")
