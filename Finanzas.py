@@ -8,6 +8,9 @@ st.set_page_config(page_title="Finanzas Personales", layout="wide")
 
 # Función para generar reporte
 def generar_reporte(df, periodo):
+    # Aseguramos que la columna 'Fecha' esté en formato datetime
+    df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+
     # Si el DataFrame está vacío
     if df.empty:
         return None
