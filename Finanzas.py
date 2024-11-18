@@ -3,16 +3,10 @@ import pandas as pd
 from datetime import datetime
 
 
-# Título de la aplicación
-st.title("Finanzas")
-
-
-# Autor de la app
-st.write("Esta app fue elaborada por Hassel Florez.") ¿Porque no aparece el autor de la app?
-
-
-# Función para inicializar los datos
 def initialize_data():
+    """
+    Inicializa los datos de transacciones y metas de ahorro si no existen.
+    """
     if "data" not in st.session_state:
         st.session_state.data = pd.DataFrame(columns=[
             "Fecha", "Categoría", "Tipo", "Monto", "Descripción"
@@ -20,8 +14,11 @@ def initialize_data():
     if "goals" not in st.session_state:
         st.session_state.goals = pd.DataFrame(columns=["Meta", "Monto", "Progreso"])
 
-# Función para agregar una transacción
+
 def add_transaction(fecha, categoria, tipo, monto, descripcion):
+    """
+    Agrega una nueva transacción al DataFrame de transacciones.
+    """
     nueva_fila = {
         "Fecha": fecha,
         "Categoría": categoria,
@@ -34,22 +31,29 @@ def add_transaction(fecha, categoria, tipo, monto, descripcion):
         ignore_index=True
     )
 
-# Función para calcular reportes
+
 def generate_report(period="Mensual"):
+    """
+    Genera un reporte de las transacciones realizadas en el período especificado
+    (semanal o mensual).
+    """
     now = datetime.now()
     if period == "Semanal":
         start_date = now - pd.Timedelta(weeks=1)
     else:  # Mensual
         start_date = now - pd.Timedelta(days=30)
-    
+
     filtered_data = st.session_state.data[
         pd.to_datetime(st.session_state.data["Fecha"]) >= start_date
     ]
     resumen = filtered_data.groupby(["Tipo", "Categoría"])["Monto"].sum()
     return resumen
 
-# Función para agregar metas de ahorro
+
 def add_saving_goal(meta, monto):
+    """
+    Agrega una nueva meta de ahorro.
+    """
     nueva_meta = {
         "Meta": meta,
         "Monto": monto,
@@ -60,18 +64,29 @@ def add_saving_goal(meta, monto):
         ignore_index=True
     )
 
-# Función para mostrar el progreso de metas de ahorro
+
 def update_saving_goal(meta, monto):
+    """
+    Actualiza el progreso de una meta de ahorro existente.
+    """
     if meta in st.session_state.goals["Meta"].values:
         idx = st.session_state.goals[st.session_state.goals["Meta"] == meta].index[0]
         st.session_state.goals.at[idx, "Progreso"] += monto
+
 
 # Inicializar datos
 initialize_data()
 
 # Configuración de la interfaz
 st.title("Gestor de Finanzas Personales")
+
+
+# Autor de la app
+st.write("Esta app fue elaborada por Hassel Florez.")
+
+
 menu = st.sidebar.radio("Menú", ["Transacciones", "Metas de Ahorro", "Reportes"])
+
 
 if menu == "Transacciones":
     st.subheader("Registrar una nueva transacción")
@@ -82,7 +97,7 @@ if menu == "Transacciones":
         monto = st.number_input("Monto", min_value=0.0, step=0.01)
         descripcion = st.text_area("Descripción")
         submit = st.form_submit_button("Agregar")
-        
+
         if submit:
             add_transaction(fecha, categoria, tipo, monto, descripcion)
             st.success("Transacción agregada exitosamente")
@@ -96,7 +111,7 @@ elif menu == "Metas de Ahorro":
         meta = st.text_input("Meta")
         monto = st.number_input("Monto objetivo", min_value=0.0, step=0.01)
         submit = st.form_submit_button("Agregar")
-        
+
         if submit:
             add_saving_goal(meta, monto)
             st.success("Meta de ahorro agregada exitosamente")
