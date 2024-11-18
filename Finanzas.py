@@ -8,6 +8,10 @@ st.set_page_config(page_title="Finanzas Personales", layout="wide")
 
 # Función para generar reporte
 def generar_reporte(df, periodo):
+    # Si el DataFrame está vacío
+    if df.empty:
+        return None
+    
     if periodo == 'Semanal':
         df['Semana'] = df['Fecha'].dt.isocalendar().week
         reporte = df.groupby(['Semana']).sum()
@@ -26,6 +30,9 @@ if 'finanzas' not in st.session_state:
 
 if 'metas_ahorro' not in st.session_state:
     st.session_state.metas_ahorro = pd.DataFrame(columns=['Meta', 'Monto Objetivo', 'Fecha Objetivo'])
+
+if 'presupuestos' not in st.session_state:
+    st.session_state.presupuestos = pd.DataFrame(columns=['Mes', 'Categoría', 'Monto Presupuestado'])
 
 # Título de la app
 st.title("Aplicación de Finanzas Personales")
@@ -83,9 +90,6 @@ elif opcion == "Presupuesto":
     mes_presupuesto = st.selectbox("Mes", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
     
     if st.button("Registrar Presupuesto"):
-        if 'presupuestos' not in st.session_state:
-            st.session_state.presupuestos = pd.DataFrame(columns=['Mes', 'Categoría', 'Monto Presupuestado'])
-        
         nuevo_presupuesto = pd.DataFrame({
             'Mes': [mes_presupuesto],
             'Categoría': [categoria_presupuesto],
@@ -100,20 +104,23 @@ elif opcion == "Presupuesto":
 elif opcion == "Reporte":
     st.header("Generar Reporte Financiero")
     
-    periodo = st.radio("Selecciona el periodo del reporte", ['Semanal', 'Mensual'])
-    
     if st.session_state.finanzas.empty:
         st.warning("No tienes registros de ingresos o gastos.")
     else:
+        periodo = st.radio("Selecciona el periodo del reporte", ['Semanal', 'Mensual'])
+
         # Generar reporte comparando lo real con lo presupuestado
         df_reportado = generar_reporte(st.session_state.finanzas, periodo)
         
         if df_reportado is not None:
-            # Comparación entre presupuesto y lo real
-            if 'presupuestos' in st.session_state:
+            # Verificamos si hay presupuestos
+            if not st.session_state.presupuestos.empty:
+                # Si hay presupuesto, lo combinamos con el reporte
                 df_comparado = pd.merge(df_reportado, st.session_state.presupuestos, how='left', 
                                          left_on=['Mes' if periodo == 'Mensual' else 'Semana'], right_on=['Mes'])
                 df_comparado['Diferencia'] = df_comparado['Monto'] - df_comparado['Monto Presupuestado']
                 st.write(df_comparado)
             else:
                 st.warning("No has registrado presupuestos.")
+        else:
+            st.warning("No se pudo generar el reporte, tal vez no haya datos para el periodo seleccionado.")
