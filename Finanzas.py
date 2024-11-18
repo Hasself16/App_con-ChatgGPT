@@ -15,12 +15,13 @@ def generar_reporte(df, periodo):
     if df.empty:
         return None
     
+    # Añadir columnas para el agrupamiento por semana o mes
     if periodo == 'Semanal':
         df['Semana'] = df['Fecha'].dt.isocalendar().week
-        reporte = df.groupby(['Semana']).sum()
+        reporte = df.groupby(['Semana']).sum(numeric_only=True)  # Solo sumamos columnas numéricas
     elif periodo == 'Mensual':
         df['Mes'] = df['Fecha'].dt.month
-        reporte = df.groupby(['Mes']).sum()
+        reporte = df.groupby(['Mes']).sum(numeric_only=True)  # Solo sumamos columnas numéricas
     else:
         st.warning("Selecciona un periodo válido.")
         return None
