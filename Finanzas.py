@@ -41,6 +41,11 @@ if 'presupuestos' not in st.session_state:
 # Título de la app
 st.title("Aplicación de Finanzas Personales")
 
+
+# Autor de la app
+st.write("Esta app fue elaborada por Hassel Florez.")
+
+
 # Menú de navegación
 menu = ["Ingreso/Gasto", "Metas de Ahorro", "Presupuesto", "Reporte"]
 opcion = st.sidebar.selectbox("Selecciona una opción", menu)
