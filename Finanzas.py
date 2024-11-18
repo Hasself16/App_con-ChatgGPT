@@ -1,127 +1,72 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+import numpy as np
+from datetime import datetime, timedelta
 
 
-def initialize_data():
-    """
-    Inicializa los datos de transacciones y metas de ahorro si no existen.
-    """
-    if "data" not in st.session_state:
-        st.session_state.data = pd.DataFrame(columns=[
-            "Fecha", "Categoría", "Tipo", "Monto", "Descripción"
-        ])
-    if "goals" not in st.session_state:
-        st.session_state.goals = pd.DataFrame(columns=["Meta", "Monto", "Progreso"])
+# Función para obtener la fecha de inicio de la semana
+def get_week_start(date):
+    """Obtiene la fecha de inicio de la semana (lunes) para una fecha dada."""
+    return date - timedelta(days=date.weekday())
 
 
-def add_transaction(fecha, categoria, tipo, monto, descripcion):
-    """
-    Agrega una nueva transacción al DataFrame de transacciones.
-    """
-    nueva_fila = {
-        "Fecha": fecha,
-        "Categoría": categoria,
-        "Tipo": tipo,
-        "Monto": monto,
-        "Descripción": descripcion
-    }
-    st.session_state.data = pd.concat(
-        [st.session_state.data, pd.DataFrame([nueva_fila])],
-        ignore_index=True
-    )
+# Función para generar el reporte de finanzas
+def generar_reporte(data, period="semanal"):
+    """Genera un reporte comparando presupuesto y gasto real por semana o mes."""
+    
+    # Asegurarse de que 'fecha' es un tipo de dato datetime
+    data['fecha'] = pd.to_datetime(data['fecha'])
+    
+    if period == "semanal":
+        # Obtener la fecha de inicio de la semana para cada registro
+        data['semana'] = data['fecha'].apply(get_week_start)
+        reporte = data.groupby('semana').agg({'presupuesto': 'sum', 'real': 'sum'})
+        reporte['diferencia'] = reporte['presupuesto'] - reporte['real']
+    else:
+        # Agrupar por mes
+        data['mes'] = data['fecha'].dt.to_period('M')
+        reporte = data.groupby('mes').agg({'presupuesto': 'sum', 'real': 'sum'})
+        reporte['diferencia'] = reporte['presupuesto'] - reporte['real']
+    
+    return reporte
 
 
-def generate_report(period="Mensual"):
-    """
-    Genera un reporte de las transacciones realizadas en el período especificado
-    (semanal o mensual).
-    """
-    now = datetime.now()
-    if period == "Semanal":
-        start_date = now - pd.Timedelta(weeks=1)
-    else:  # Mensual
-        start_date = now - pd.Timedelta(days=30)
+# Configuración de la app en Streamlit
+st.title("Aplicación de Finanzas Personales")
 
-    filtered_data = st.session_state.data[
-        pd.to_datetime(st.session_state.data["Fecha"]) >= start_date
-    ]
-    resumen = filtered_data.groupby(["Tipo", "Categoría"])["Monto"].sum()
-    return resumen
+# Inicialización de los datos
+if 'data' not in st.session_state:
+    st.session_state.data = pd.DataFrame(columns=['fecha', 'categoria', 'presupuesto', 'real'])
 
+# Formulario para registrar una nueva transacción
+with st.form("formulario_finanzas"):
+    st.header("Registrar una nueva transacción")
+    fecha = st.date_input("Fecha", value=datetime.today())
+    categoria = st.text_input("Categoría (ej. comida, alquiler, transporte)")
+    presupuesto = st.number_input("Presupuesto (€)", min_value=0.0, value=0.0, step=10.0)
+    real = st.number_input("Real (€)", min_value=0.0, value=0.0, step=10.0)
+    submit_button = st.form_submit_button("Registrar")
 
-def add_saving_goal(meta, monto):
-    """
-    Agrega una nueva meta de ahorro.
-    """
-    nueva_meta = {
-        "Meta": meta,
-        "Monto": monto,
-        "Progreso": 0
-    }
-    st.session_state.goals = pd.concat(
-        [st.session_state.goals, pd.DataFrame([nueva_meta])],
-        ignore_index=True
-    )
+    if submit_button:
+        # Agregar los datos al DataFrame
+        st.session_state.data = pd.concat(
+            [st.session_state.data, pd.DataFrame([[fecha, categoria, presupuesto, real]], columns=['fecha', 'categoria', 'presupuesto', 'real'])],
+            ignore_index=True
+        )
+        st.success("Transacción registrada con éxito!")
 
-
-def update_saving_goal(meta, monto):
-    """
-    Actualiza el progreso de una meta de ahorro existente.
-    """
-    if meta in st.session_state.goals["Meta"].values:
-        idx = st.session_state.goals[st.session_state.goals["Meta"] == meta].index[0]
-        st.session_state.goals.at[idx, "Progreso"] += monto
-
-
-# Inicializar datos
-initialize_data()
-
-# Configuración de la interfaz
-st.title("Gestor de Finanzas Personales")
-
-
-# Autor de la app
-st.write("Esta app fue elaborada por Hassel Florez.")
-
-
-menu = st.sidebar.radio("Menú", ["Transacciones", "Metas de Ahorro", "Reportes"])
-
-
-if menu == "Transacciones":
-    st.subheader("Registrar una nueva transacción")
-    with st.form("form_transaccion"):
-        fecha = st.date_input("Fecha", value=datetime.now().date())
-        categoria = st.text_input("Categoría")
-        tipo = st.selectbox("Tipo", ["Ingreso", "Gasto"])
-        monto = st.number_input("Monto", min_value=0.0, step=0.01)
-        descripcion = st.text_area("Descripción")
-        submit = st.form_submit_button("Agregar")
-
-        if submit:
-            add_transaction(fecha, categoria, tipo, monto, descripcion)
-            st.success("Transacción agregada exitosamente")
-
-    st.subheader("Transacciones registradas")
+# Mostrar los datos registrados
+if len(st.session_state.data) > 0:
+    st.subheader("Datos de Finanzas")
     st.dataframe(st.session_state.data)
 
-elif menu == "Metas de Ahorro":
-    st.subheader("Registrar una nueva meta de ahorro")
-    with st.form("form_meta"):
-        meta = st.text_input("Meta")
-        monto = st.number_input("Monto objetivo", min_value=0.0, step=0.01)
-        submit = st.form_submit_button("Agregar")
+    # Generar reportes semanales y mensuales
+    reporte_semanal = generar_reporte(st.session_state.data, period="semanal")
+    reporte_mensual = generar_reporte(st.session_state.data, period="mensual")
 
-        if submit:
-            add_saving_goal(meta, monto)
-            st.success("Meta de ahorro agregada exitosamente")
+    # Mostrar reportes
+    st.subheader("Reporte Semanal")
+    st.dataframe(reporte_semanal)
 
-    st.subheader("Progreso de metas de ahorro")
-    st.dataframe(st.session_state.goals)
-
-elif menu == "Reportes":
-    st.subheader("Generar Reportes")
-    periodo = st.selectbox("Periodo", ["Semanal", "Mensual"])
-    reporte = generate_report(periodo)
-    st.write("Resumen del reporte:")
-    st.dataframe(reporte)
+    st.subheader("Reporte Mensual")
+    st.dataframe(reporte_mensual)
