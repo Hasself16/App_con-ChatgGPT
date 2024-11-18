@@ -4,6 +4,11 @@ import streamlit as st
 # Título de la aplicación
 st.title("Conversor Universal")
 
+
+# Autor de la app
+st.write("Esta app fue elaborada por Hassel Florez.")
+
+
 # Menú principal: Selección de tipo de conversión
 tipo_conversion = st.selectbox(
     "Selecciona el tipo de conversión:",
