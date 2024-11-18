@@ -24,24 +24,26 @@ def generar_reporte(df, periodo):
 if 'finanzas' not in st.session_state:
     st.session_state.finanzas = pd.DataFrame(columns=['Fecha', 'Categoría', 'Monto', 'Tipo'])
 
+if 'metas_ahorro' not in st.session_state:
+    st.session_state.metas_ahorro = pd.DataFrame(columns=['Meta', 'Monto Objetivo', 'Fecha Objetivo'])
+
 # Título de la app
 st.title("Aplicación de Finanzas Personales")
 
 # Menú de navegación
-menu = ["Ingreso", "Gasto", "Metas de Ahorro", "Presupuesto", "Reporte"]
+menu = ["Ingreso/Gasto", "Metas de Ahorro", "Presupuesto", "Reporte"]
 opcion = st.sidebar.selectbox("Selecciona una opción", menu)
 
 # Formulario para registrar ingresos o gastos
-if opcion == "Ingreso" or opcion == "Gasto":
-    st.header(f"Registrar {opcion}")
+if opcion == "Ingreso/Gasto":
+    st.header("Registrar Ingreso o Gasto")
     
+    tipo = st.radio("¿Es un Ingreso o un Gasto?", ["Ingreso", "Gasto"])
     categoria = st.text_input("Categoría")
-    monto = st.number_input(f"Monto de {opcion}", min_value=0.0, step=1.0)
+    monto = st.number_input(f"Monto de {tipo}", min_value=0.0, step=1.0)
     fecha = st.date_input("Fecha", value=datetime.date.today())
     
-    tipo = "Ingreso" if opcion == "Ingreso" else "Gasto"
-    
-    if st.button(f"Registrar {opcion}"):
+    if st.button(f"Registrar {tipo}"):
         nuevo_registro = pd.DataFrame({
             'Fecha': [fecha],
             'Categoría': [categoria],
@@ -50,7 +52,7 @@ if opcion == "Ingreso" or opcion == "Gasto":
         })
         
         st.session_state.finanzas = pd.concat([st.session_state.finanzas, nuevo_registro], ignore_index=True)
-        st.success(f"{opcion} registrado exitosamente.")
+        st.success(f"{tipo} registrado exitosamente.")
         st.write(st.session_state.finanzas)
 
 # Ingreso de metas de ahorro
@@ -62,9 +64,15 @@ elif opcion == "Metas de Ahorro":
     fecha_meta = st.date_input("Fecha objetivo", value=datetime.date.today())
     
     if st.button("Registrar Meta de Ahorro"):
-        st.session_state.meta_ahorro = {"Meta": meta, "Monto": monto_meta, "Fecha Objetivo": fecha_meta}
+        nueva_meta = pd.DataFrame({
+            'Meta': [meta],
+            'Monto Objetivo': [monto_meta],
+            'Fecha Objetivo': [fecha_meta]
+        })
+        
+        st.session_state.metas_ahorro = pd.concat([st.session_state.metas_ahorro, nueva_meta], ignore_index=True)
         st.success("Meta de ahorro registrada exitosamente.")
-        st.write(st.session_state.meta_ahorro)
+        st.write(st.session_state.metas_ahorro)
 
 # Ingreso de presupuesto
 elif opcion == "Presupuesto":
